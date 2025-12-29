@@ -1,0 +1,6 @@
+## Interface: 120000
+## Title: Fix Arcane Familiar
+## Notes: The Acane familiar buff has been bugged for far too long. This is just to remind you everytime it gets dispelled
+## Version: 1.0.0
+
+FixArcaneFamiliar.lua
