@@ -100,6 +100,12 @@ local function UpdateBuffStatus()
         return
     end
 
+    -- Don't show during combat
+    if InCombatLockdown() then
+        frame:Hide()
+        return
+    end
+
     if HasArcaneFamiliarBuff() then
         frame:Hide()
     else
@@ -114,6 +120,8 @@ local isActive = false
 local function EnableAddon()
     if not isActive then
         eventFrame:RegisterEvent("UNIT_AURA")
+        eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
+        eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
         isActive = true
     end
     UpdateBuffStatus()
@@ -122,6 +130,8 @@ end
 local function DisableAddon()
     if isActive then
         eventFrame:UnregisterEvent("UNIT_AURA")
+        eventFrame:UnregisterEvent("PLAYER_REGEN_DISABLED")
+        eventFrame:UnregisterEvent("PLAYER_REGEN_ENABLED")
         isActive = false
     end
     frame:Hide()
@@ -145,6 +155,12 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
         if unit == "player" then
             UpdateBuffStatus()
         end
+    elseif event == "PLAYER_REGEN_DISABLED" then
+        -- Entering combat, hide frame
+        frame:Hide()
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        -- Leaving combat, check buff status
+        UpdateBuffStatus()
     else
         CheckSpecAndToggle()
     end
